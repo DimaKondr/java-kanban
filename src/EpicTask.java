@@ -9,6 +9,16 @@ public class EpicTask extends Task {
         epicSubTaskIDList = new ArrayList<>();
     }
 
+    //Получаем списка ID подзадач.
+    public ArrayList<Integer> getEpicSubTaskIDList() {
+        return epicSubTaskIDList;
+    }
+
+    //Задаем в качестве списка ID подзадач полученный список.
+    public void setEpicSubTaskIDList(ArrayList<Integer> epicSubTaskIDList) {
+        this.epicSubTaskIDList = epicSubTaskIDList;
+    }
+
     //Добавление ID подзадачи в список.
     public void addSubTaskID(Integer subTaskID) {
         epicSubTaskIDList.add(subTaskID);

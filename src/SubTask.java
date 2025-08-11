@@ -6,6 +6,11 @@ public class SubTask extends Task {
         this.epicTaskID = epicTaskID;
     }
 
+    //Получаем ID Epic-задачи в которую входит подзадача.
+    public int getEpicTaskID() {
+        return epicTaskID;
+    }
+
     @Override
     public String toString() {
         return "SubTask{epicTaskID='" + epicTaskID + "', title='" + title
