@@ -1,6 +1,6 @@
 import java.util.Map;
 import java.util.List;
-//Интерфейс менеджера задач.
+
 public interface TaskManager {
     //Получение списка простых задач. Возвращаем список.
     List<Task> getTasksList();
