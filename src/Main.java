@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -20,21 +18,21 @@ public class Main {
                 String taskType = scanner.nextLine();
                 switch (Integer.parseInt(taskType)) {
                     case 1:
-                        ArrayList<Task> returnedTasksList = taskManager.getTasksList();
+                        List<Task> returnedTasksList = taskManager.getTasksList();
                         returnedTasksList.forEach(System.out::println);
                         break;
                     case 2:
-                        ArrayList<EpicTask> returnedEpicTasksList = taskManager.getEpicTasksList();
+                        List<EpicTask> returnedEpicTasksList = taskManager.getEpicTasksList();
                         returnedEpicTasksList.forEach(System.out::println);
                         break;
                     case 3:
-                        ArrayList<SubTask> returnedSubTasksList = taskManager.getSubTasksList();
+                        List<SubTask> returnedSubTasksList = taskManager.getSubTasksList();
                         returnedSubTasksList.forEach(System.out::println);
                         break;
                     case 4:
                         System.out.println("Введите ID Epic-задачи:");
                         String epicTaskID = scanner.nextLine();
-                        ArrayList<SubTask> returnedSubTasksOfEpicTask
+                        List<SubTask> returnedSubTasksOfEpicTask
                                 = taskManager.getSubTasksOfEpicTask(Integer.valueOf(epicTaskID));
                         returnedSubTasksOfEpicTask.forEach(System.out::println);
                         break;
@@ -50,15 +48,15 @@ public class Main {
                 String taskType = scanner.nextLine();
                 switch (Integer.parseInt(taskType)) {
                     case 1:
-                        HashMap<Integer, Task> returnedTasksList = taskManager.clearTasksLists();
+                        Map<Integer, Task> returnedTasksList = taskManager.clearTasksLists();
                         System.out.println("Список задач очищен");
                         break;
                     case 2:
-                        HashMap<Integer, EpicTask> returnedEpicTasksList = taskManager.clearEpicTasksLists();
+                        Map<Integer, EpicTask> returnedEpicTasksList = taskManager.clearEpicTasksLists();
                         System.out.println("Список Epic-задач очищен");
                         break;
                     case 3:
-                        HashMap<Integer, SubTask> returnedSubTasksList = taskManager.clearSubTasksLists();
+                        Map<Integer, SubTask> returnedSubTasksList = taskManager.clearSubTasksLists();
                         System.out.println("Список подзадач Epic-задач очищен");
                         break;
                     default:
@@ -136,7 +134,7 @@ public class Main {
                 String taskID = scanner.nextLine();
                 if (Integer.parseInt(taskType) == 1) {
                     Task oldTask = null;
-                    ArrayList<Task> taskArrayList = taskManager.getTasksList();
+                    List<Task> taskArrayList = taskManager.getTasksList();
                     for (Task task : taskArrayList) {
                         if (task.getTaskID() == Integer.parseInt(taskID)) oldTask = task;
                     }
@@ -146,7 +144,7 @@ public class Main {
                     System.out.println("Задача обновлена: " + returnedTask);
                 } else if (Integer.parseInt(taskType) == 2) {
                     EpicTask oldEpicTask = null;
-                    ArrayList<EpicTask> epicTaskArrayList = taskManager.getEpicTasksList();
+                    List<EpicTask> epicTaskArrayList = taskManager.getEpicTasksList();
                     for (EpicTask epicTask : epicTaskArrayList) {
                         if (epicTask.getTaskID() == Integer.parseInt(taskID)) oldEpicTask = epicTask;
                     }
@@ -156,7 +154,7 @@ public class Main {
                     System.out.println("Эпик-задача обновлена: " + returnedEpicTask);
                 } else if (Integer.parseInt(taskType) == 3) {
                     SubTask oldSubTask = null;
-                    ArrayList<SubTask> subTaskArrayList = taskManager.getSubTasksList();
+                    List<SubTask> subTaskArrayList = taskManager.getSubTasksList();
                     for (SubTask subTask : subTaskArrayList) {
                         if (subTask.getTaskID() == Integer.parseInt(taskID)) oldSubTask = subTask;
                     }
@@ -190,8 +188,8 @@ public class Main {
                     default:
                         System.out.println("Такая команда отсутствует. Повторите попытку.");
                 }
-            } else if(Integer.parseInt(command) == 7) { //Показываем десять последних просмотренных задач
-                ArrayList<Task> taskViewHistory = historyManager.getHistory();
+            } else if(Integer.parseInt(command) == 7) { //Показываем список просмотренных задач
+                List<Task> taskViewHistory = historyManager.getHistory();
                 System.out.println(taskViewHistory);
             } else if (Integer.parseInt(command) == 0) { //Завершаем работу
                 System.out.println("Выход");
@@ -244,7 +242,7 @@ public class Main {
             System.out.println(taskManager.getSubTaskByID(taskID));
         }
 
-        System.out.println("Десять последних просмотренных задач:");
+        System.out.println("Список просмотренных задач:");
         System.out.println(historyManager.getHistory());
     }
 
@@ -257,7 +255,7 @@ public class Main {
         System.out.println("4 - Создать новую задачу");
         System.out.println("5 - Обновить имеющуюся задачу");
         System.out.println("6 - Удалить задачу по ID");
-        System.out.println("7 - Показать десять последних просмотренных задач");
+        System.out.println("7 - Показать список просмотренных задач");
         System.out.println("0 - Выход");
     }
 
