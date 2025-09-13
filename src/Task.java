@@ -6,10 +6,19 @@ public class Task {
     public TaskStatus taskStatus; //Здесь храним статус задачи.
     public int taskID; //Здесь храним ID задачи.
 
+    //Конструктор для создания новых объектов.
     public Task(String title, String description, TaskStatus taskStatus) {
         this.title = title;
         this.description = description;
         this.taskStatus = taskStatus;
+    }
+
+    //Конструктор для создания копии объекта.
+    public Task(Task taskForCopy) {
+        this.title = taskForCopy.title;
+        this.description = taskForCopy.description;
+        this.taskStatus = taskForCopy.taskStatus;
+        this.taskID = taskForCopy.taskID;
     }
 
     //Получаем ID задачи.
