@@ -188,7 +188,7 @@ public class Main {
                     default:
                         System.out.println("Такая команда отсутствует. Повторите попытку.");
                 }
-            } else if(Integer.parseInt(command) == 7) { //Показываем список просмотренных задач
+            } else if (Integer.parseInt(command) == 7) { //Показываем список просмотренных задач
                 List<Task> taskViewHistory = historyManager.getHistory();
                 System.out.println(taskViewHistory);
             } else if (Integer.parseInt(command) == 0) { //Завершаем работу
