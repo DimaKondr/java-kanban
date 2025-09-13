@@ -251,17 +251,17 @@ public class InMemoryTaskManager implements TaskManager {
     public int generateTaskID() {
         int maxID = 0;
         if (!tasksList.isEmpty()) {
-            for (Integer key : tasksList.keySet()){
+            for (Integer key : tasksList.keySet()) {
                 if (key > maxID) maxID = key;
             }
         }
         if (!epicTasksList.isEmpty()) {
-            for (Integer key : epicTasksList.keySet()){
+            for (Integer key : epicTasksList.keySet()) {
                 if (key > maxID) maxID = key;
             }
         }
         if (!subTasksList.isEmpty()) {
-            for (Integer key : subTasksList.keySet()){
+            for (Integer key : subTasksList.keySet()) {
                 if (key > maxID) maxID = key;
             }
         }
