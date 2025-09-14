@@ -1,12 +1,9 @@
-import java.util.List;
+import java.util.ArrayList;
 
 public interface HistoryManager {
     //Добавление просмотренной задачи в список просмотренных задач.
     void addToHistory(Task someTask);
 
-    //Получение списка просмотренных задач. Возвращаем список.
-    List<Task> getHistory();
-
-    //Удаление задачи из истории просмотра
-    void removeFromHistory(int taskID);
+    //Получение списка десяти последних просмотренных задач. Возвращаем список.
+    ArrayList<Task> getHistory();
 }

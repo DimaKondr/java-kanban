@@ -1,7 +1,5 @@
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ManagersTest {
@@ -38,11 +36,8 @@ class ManagersTest {
         //Проверяем класс объекта.
         assertInstanceOf(HistoryManager.class, historyManager, "Тип не совпадает!");
 
-        List<Task> historyList = historyManager.getHistory();
-
-        //Проверяем, что при инициализации менеджера истории история просмотра пуста.
-        assertNotNull(historyList, "Список отсутствует!");
-        assertTrue(historyList.isEmpty(), "Список должен быть пустым!");
-        assertEquals(0, historyList.size(), "Список должен быть пустым!");
+        //Проверяем, что проинициализирован пустой ArrayList для хранения списка просмотренных задач.
+        assertNotNull(historyManager.getHistory(), "Список отсутствует!");
+        assertTrue(historyManager.getHistory().isEmpty(), "Список должен быть пустым!");
     }
 }

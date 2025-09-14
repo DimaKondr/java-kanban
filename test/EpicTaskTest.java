@@ -2,7 +2,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +19,7 @@ class EpicTaskTest {
     //Проверяем получения списка ID сабтасков.
     @Test
     void getEpicSubTaskIDListTesting() {
-        List<Integer> epicSubTaskIDList = epicTask.getEpicSubTaskIDList();
+        ArrayList<Integer> epicSubTaskIDList = epicTask.getEpicSubTaskIDList();
 
         //Проверяем наличие ожидаемых ID сабтасков.
         assertTrue(epicSubTaskIDList.contains(5), "ID не найден.");

@@ -1,29 +1,21 @@
 import java.util.ArrayList;
-import java.util.List;
 
 public class EpicTask extends Task {
     //В списке храним ID всех подзадач, которые входят в Epic-задачу.
-    public List<Integer> epicSubTaskIDList;
+    public ArrayList<Integer> epicSubTaskIDList;
 
-    //Конструктор для создания новых объектов.
     public EpicTask(String title, String description, TaskStatus taskStatus) {
         super(title, description, taskStatus);
         epicSubTaskIDList = new ArrayList<>();
     }
 
-    //Конструктор для создания копии объекта.
-    public EpicTask(EpicTask epicTaskForCopy) {
-        super(epicTaskForCopy);
-        this.epicSubTaskIDList = new ArrayList<>(epicTaskForCopy.epicSubTaskIDList);
-    }
-
     //Получаем списка ID подзадач.
-    public List<Integer> getEpicSubTaskIDList() {
+    public ArrayList<Integer> getEpicSubTaskIDList() {
         return epicSubTaskIDList;
     }
 
     //Задаем в качестве списка ID подзадач полученный список.
-    public void setEpicSubTaskIDList(List<Integer> epicSubTaskIDList) {
+    public void setEpicSubTaskIDList(ArrayList<Integer> epicSubTaskIDList) {
         if (!epicSubTaskIDList.contains(this.getTaskID())) {
             this.epicSubTaskIDList = epicSubTaskIDList;
         }
