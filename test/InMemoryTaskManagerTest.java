@@ -223,7 +223,7 @@ class InMemoryTaskManagerTest {
         assertNotNull(testedSubTask, "Сабтаск не найден!");
 
         //Проверяем, что по ID получен нужный сабтаск, с верными заголовком, описанием, статусом и ID,
-        //а также, что в этом же сабтаске верно сохранен номер ID эпика, к которому относится сабтаск.
+        // а также, что в этом же сабтаске верно сохранен номер ID эпика, к которому относится сабтаск.
         assertEquals("Сабтаск Тест 3", testedSubTask.title, "Заголовки не совпадают!");
         assertEquals("Тестовый сабтаск-3", testedSubTask.description, "Описания не совпадают!");
         assertEquals(TaskStatus.NEW, testedSubTask.taskStatus, "Статусы не совпадают!");
@@ -251,7 +251,7 @@ class InMemoryTaskManagerTest {
         Task testedTask = inMemoryTaskManager.getTaskByID(10);
 
         //Проверяем, что сохранился таск класса Task.
-        assertInstanceOf(Task.class, testedTask, "Объект должен быть класса Task");
+        assertTrue(testedTask instanceof Task, "Объект должен быть класса Task");
 
         //Проверяем, что при добавлении таска корректно сохраняются заголовок, описание, статус и ID.
         assertEquals("Это!%тестовая@@$%??таска_sldkfjalewf", testedTask.title,
@@ -283,7 +283,7 @@ class InMemoryTaskManagerTest {
         EpicTask testedEpicTask = inMemoryTaskManager.getEpicTaskByID(10);
 
         //Проверяем, что сохранился эпик класса EpicTask.
-        assertInstanceOf(EpicTask.class, testedEpicTask, "Объект должен быть класса EpicTask");
+        assertTrue(testedEpicTask instanceof EpicTask, "Объект должен быть класса EpicTask");
 
         //Проверяем, что при добавлении эпика корректно сохраняются заголовок, описание, статус и ID,
         //а также, что имеется пустой лист для сохранения ID будущих сабтасков.
@@ -329,7 +329,7 @@ class InMemoryTaskManagerTest {
         SubTask testedSubTask = inMemoryTaskManager.getSubTaskByID(11);
 
         //Проверяем, что сохранился эпик класса EpicTask.
-        assertInstanceOf(SubTask.class, testedSubTask, "Объект должен быть класса SubTask");
+        assertTrue(testedSubTask instanceof SubTask, "Объект должен быть класса SubTask");
 
         //Проверяем, что при добавлении сабтаска корректно сохраняются заголовок, описание, статус и ID,
         //а также, что в этом же сабтаске верно сохранен номер ID эпика, к которому относится сабтаск.
@@ -496,9 +496,9 @@ class InMemoryTaskManagerTest {
         SubTask otherSubTask2 = new SubTask("Тест", "Тестовый сабтаск",TaskStatus.NEW, 3);
         otherSubTask2.setTaskID(6);
         SubTask subTask = inMemoryTaskManager.getSubTaskByID(6);
+        EpicTask epicTask = inMemoryTaskManager.getEpicTaskByID(subTask.getEpicTaskID());
 
         inMemoryTaskManager.removeSubTaskByID(6);
-        EpicTask epicTask = inMemoryTaskManager.getEpicTaskByID(subTask.getEpicTaskID());
 
         assertFalse(inMemoryTaskManager.getSubTasksList().contains(otherSubTask2), "Сабтаск не удален!");
         assertFalse(epicTask.getEpicSubTaskIDList().contains(otherSubTask2.getTaskID()), "Сабтаск не удален!");
@@ -507,42 +507,33 @@ class InMemoryTaskManagerTest {
     //Проверяем метод для определения статуса эпика на основе статуса его сабтасков.
     @Test
     void chooseEpicTaskStatusTesting() {
-        EpicTask epicTaskTest1 = inMemoryTaskManager.getEpicTaskByID(4);
+        EpicTask epicTask = inMemoryTaskManager.getEpicTaskByID(4);
+        inMemoryTaskManager.chooseEpicTaskStatus(epicTask);
 
         //Проверяем, что эпик, у которого статус всех сабтасков NEW, имеет статус NEW.
-        assertEquals(TaskStatus.NEW, epicTaskTest1.getTaskStatus(), "Статус не совпадает!");
+        assertEquals(TaskStatus.NEW, epicTask.getTaskStatus(), "Статус не совпадает!");
 
-        SubTask subTaskTest1 = new SubTask("СабтаскNewТест", "Тестовый сабтаскNew",
-                TaskStatus.IN_PROGRESS, 4);
-        inMemoryTaskManager.addSubTask(subTaskTest1);
-        EpicTask epicTaskTest2 = inMemoryTaskManager.getEpicTaskByID(4);
+        SubTask otherSubTask = inMemoryTaskManager.getSubTaskByID(7);
+        otherSubTask.setTaskStatus(TaskStatus.IN_PROGRESS);
+        inMemoryTaskManager.chooseEpicTaskStatus(epicTask);
 
         //Проверяем, что эпик, у которого статус хотя бы одной сабтаски IN_PROGRESS, имеет статус IN_PROGRESS.
-        assertEquals(TaskStatus.IN_PROGRESS, epicTaskTest2.getTaskStatus(), "Статус не совпадает!");
+        assertEquals(TaskStatus.IN_PROGRESS, epicTask.getTaskStatus(), "Статус не совпадает!");
 
-        SubTask subTaskTest2 = new SubTask("Сабтаск Тест 3", "Тестовый сабтаск-3",
-                TaskStatus.DONE, 4);
-        subTaskTest2.setTaskID(7);
-        SubTask subTaskTest3 = new SubTask("Сабтаск Тест 4", "Тестовый сабтаск-4",
-                TaskStatus.DONE, 4);
-        subTaskTest3.setTaskID(8);
-        SubTask subTaskTest4 = new SubTask("Сабтаск Тест 5", "Тестовый сабтаск-5",
-                TaskStatus.DONE, 4);
-        subTaskTest4.setTaskID(9);
-        inMemoryTaskManager.updateSubTask(subTaskTest2);
-        inMemoryTaskManager.updateSubTask(subTaskTest3);
-        inMemoryTaskManager.updateSubTask(subTaskTest4);
-        EpicTask epicTaskTest3 = inMemoryTaskManager.getEpicTaskByID(4);
+        for (Integer taskID : epicTask.getEpicSubTaskIDList()) {
+            SubTask subTask = inMemoryTaskManager.getSubTaskByID(taskID);
+            subTask.setTaskStatus(TaskStatus.DONE);
+        }
+        inMemoryTaskManager.chooseEpicTaskStatus(epicTask);
 
         //Проверяем, что эпик, у которого статус всех сабтасков DONE, имеет статус DONE.
-        assertEquals(TaskStatus.DONE, epicTaskTest3.getTaskStatus(), "Статус не совпадает!");
+        assertEquals(TaskStatus.DONE, epicTask.getTaskStatus(), "Статус не совпадает!");
 
-        EpicTask epicTaskTest4 = inMemoryTaskManager.getEpicTaskByID(4);
-        epicTaskTest4.clearEpicSubTaskIDList();
-        inMemoryTaskManager.chooseEpicTaskStatus(epicTaskTest4);
+        epicTask.clearEpicSubTaskIDList();
+        inMemoryTaskManager.chooseEpicTaskStatus(epicTask);
 
         //Проверяем, что эпик, у которого список ID сабтасков пуст, имеет статус NEW.
-        assertEquals(TaskStatus.NEW, epicTaskTest4.getTaskStatus(), "Статус не совпадает!");
+        assertEquals(TaskStatus.NEW, epicTask.getTaskStatus(), "Статус не совпадает!");
     }
 
     //Проверяем метод для генерации ID всех тасков.
@@ -576,8 +567,8 @@ class InMemoryTaskManagerTest {
 
     //Проверяем корректность создания копии задачи для сохранения в истории просмотра.
     @Test
-    void createTaskCopyTesting() {
-        Task testedTask = inMemoryTaskManager.createTaskCopy(task2);
+    void createTaskCopyForHistoryTesting() {
+        Task testedTask = inMemoryTaskManager.createTaskCopyForHistory(task2);
         task2.title = "ChangedТаск Тест 2";
         task2.description = "ChangedТестовый таск-2";
         task2.setTaskStatus(TaskStatus.DONE);
@@ -591,8 +582,8 @@ class InMemoryTaskManagerTest {
 
     //Проверяем корректность создания копии эпик-задачи.
     @Test
-    void createEpicTaskCopyTesting() {
-        EpicTask testedEpicTask = inMemoryTaskManager.createEpicTaskCopy(epicTask1);
+    void createEpicTaskCopyForHistoryTesting() {
+        EpicTask testedEpicTask = inMemoryTaskManager.createEpicTaskCopyForHistory(epicTask1);
         epicTask1.title = "ChangedЭпик Тест 1";
         epicTask1.description = "ChangedТестовый эпик-1";
         subTask1.setTaskStatus(TaskStatus.DONE);
@@ -601,7 +592,7 @@ class InMemoryTaskManagerTest {
         inMemoryTaskManager.addSubTask(otherSubTask);
 
         //Проверяем, что в epicTask1 в список сабстасков был добавлен ID 9 нового сабтаска,
-        //и что статус epicTask1 изменился на DONE.
+        // и что статус epicTask1 изменился на DONE.
         assertTrue(epicTask1.getEpicSubTaskIDList().contains(9));
         assertEquals(TaskStatus.DONE, epicTask1.getTaskStatus(), "Статусы не совпадают!");
 
@@ -619,8 +610,8 @@ class InMemoryTaskManagerTest {
 
     //Проверяем корректность создания копии подзадачи.
     @Test
-    void createSubTaskCopyTesting() {
-        SubTask testedSubTask = inMemoryTaskManager.createSubTaskCopy(subTask3);
+    void createSubTaskCopyForHistoryTesting() {
+        SubTask testedSubTask = inMemoryTaskManager.createSubTaskCopyForHistory(subTask3);
         subTask3.title = "ChangedСабтаск Тест 3";
         subTask3.description = "ChangedТестовый сабтаск-3";
         subTask3.setTaskStatus(TaskStatus.DONE);
