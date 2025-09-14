@@ -42,7 +42,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     //Добавление задачи в конец двусвязного списка.
-    public Node linkLast(Task task) {
+    private Node linkLast(Task task) {
         Node newNode = new Node(task);
         if (head == null && tail == null) {
             head = newNode;
@@ -64,7 +64,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     //Удаление узла из двусвязного списка.
-    public void removeNode(Node node) {
+    private void removeNode(Node node) {
         Node prevNode = node.prev;
         Node nextNode = node.next;
         if (prevNode == null && nextNode == null) {
