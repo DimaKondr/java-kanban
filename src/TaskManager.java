@@ -1,27 +1,27 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-//Интерфейс менеджера задач.
+import java.util.Map;
+import java.util.List;
+
 public interface TaskManager {
     //Получение списка простых задач. Возвращаем список.
-    ArrayList<Task> getTasksList();
+    List<Task> getTasksList();
 
     //Получение списка Epic-задач. Возвращаем список.
-    ArrayList<EpicTask> getEpicTasksList();
+    List<EpicTask> getEpicTasksList();
 
     //Получение списка подзадач Epic-задач. Возвращаем список.
-    ArrayList<SubTask> getSubTasksList();
+    List<SubTask> getSubTasksList();
 
     //Получение списка подзадач определенной Epic-задачи. Возвращаем список.
-    ArrayList<SubTask> getSubTasksOfEpicTask(Integer epicTaskID);
+    List<SubTask> getSubTasksOfEpicTask(Integer epicTaskID);
 
     //Полное очищение списка всех простых задач. Возвращаем пустой список.
-    HashMap<Integer, Task> clearTasksLists();
+    Map<Integer, Task> clearTasksLists();
 
     //Полное очищение списка всех Epic-задач. Возвращаем пустой список.
-    HashMap<Integer, EpicTask> clearEpicTasksLists();
+    Map<Integer, EpicTask> clearEpicTasksLists();
 
     //Полное очищение списка всех подзадач. Возвращаем пустой список.
-    HashMap<Integer, SubTask> clearSubTasksLists();
+    Map<Integer, SubTask> clearSubTasksLists();
 
     //Получение простой задачи по ее ID. Возвращаем имеющуюся простую задачу.
     Task getTaskByID(Integer taskID);
@@ -66,13 +66,13 @@ public interface TaskManager {
     int generateTaskID();
 
     //Создание копии простой задачи для сохранения в истории просмотра.
-    Task createTaskCopyForHistory(Task task);
+    Task createTaskCopy(Task task);
 
     //Создание копии эпик-задачи для сохранения в истории просмотра.
-    EpicTask createEpicTaskCopyForHistory(EpicTask epicTask);
+    EpicTask createEpicTaskCopy(EpicTask epicTask);
 
     //Создание копии подзадачи для сохранения в истории просмотра.
-    SubTask createSubTaskCopyForHistory(SubTask subTask);
+    SubTask createSubTaskCopy(SubTask subTask);
 
     //Получаем менеджера истории.
     HistoryManager getHistoryManager();
