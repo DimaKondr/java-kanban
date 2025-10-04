@@ -48,15 +48,12 @@ public class Main {
                 String taskType = scanner.nextLine();
                 switch (Integer.parseInt(taskType)) {
                     case 1:
-                        Map<Integer, Task> returnedTasksList = taskManager.clearTasksLists();
                         System.out.println("Список задач очищен");
                         break;
                     case 2:
-                        Map<Integer, EpicTask> returnedEpicTasksList = taskManager.clearEpicTasksLists();
                         System.out.println("Список Epic-задач очищен");
                         break;
                     case 3:
-                        Map<Integer, SubTask> returnedSubTasksList = taskManager.clearSubTasksLists();
                         System.out.println("Список подзадач Epic-задач очищен");
                         break;
                     default:
@@ -107,18 +104,18 @@ public class Main {
                 String taskType = scanner.nextLine();
                 if (Integer.parseInt(taskType) == 1) {
                     Task task = new Task(title, description, taskStatus);
-                    Task returnedTask = taskManager.addTask(task);
-                    System.out.println("Создана новая задача: " + returnedTask);
+                    taskManager.addTask(task);
+                    System.out.println("Создана новая задача: " + taskManager.getTaskByID(task.getTaskID()));
                 } else if (Integer.parseInt(taskType) == 2) {
                     EpicTask epicTask = new EpicTask(title, description, taskStatus);
-                    EpicTask returnedEpicTask = taskManager.addEpicTask(epicTask);
-                    System.out.println("Создана новая задача: " + returnedEpicTask);
+                    taskManager.addEpicTask(epicTask);
+                    System.out.println("Создана новая задача: " + taskManager.getEpicTaskByID(epicTask.getTaskID()));
                 } else if (Integer.parseInt(taskType) == 3) {
                     System.out.println("В какую Epic-задачу вы хотите добавить подзадачу?");
                     String epicTaskID = scanner.nextLine();
                     SubTask subTask = new SubTask(title, description, taskStatus, Integer.parseInt(epicTaskID));
-                    SubTask returnedSubTask = taskManager.addSubTask(subTask);
-                    System.out.println("Добавлена новая подзадача: " + returnedSubTask);
+                    taskManager.addSubTask(subTask);
+                    System.out.println("Добавлена новая подзадача: " + taskManager.getSubTaskByID(subTask.getTaskID()));
                 } else {
                     System.out.println("Извините, такой команды пока нет.");
                 }
@@ -140,8 +137,8 @@ public class Main {
                     }
                     Task updatedTask = new Task(newTitle, newDescription, chooseTaskStatus(scanner));
                     updatedTask.setTaskID(oldTask.getTaskID());
-                    Task returnedTask = taskManager.updateTask(updatedTask);
-                    System.out.println("Задача обновлена: " + returnedTask);
+                    taskManager.updateTask(updatedTask);
+                    System.out.println("Задача обновлена: " + taskManager.getTaskByID(updatedTask.getTaskID()));
                 } else if (Integer.parseInt(taskType) == 2) {
                     EpicTask oldEpicTask = null;
                     List<EpicTask> epicTaskArrayList = taskManager.getEpicTasksList();
@@ -150,8 +147,9 @@ public class Main {
                     }
                     EpicTask updatedEpicTask = new EpicTask(newTitle, newDescription, TaskStatus.NEW);
                     updatedEpicTask.setTaskID(oldEpicTask.getTaskID());
-                    EpicTask returnedEpicTask = taskManager.updateEpicTask(updatedEpicTask);
-                    System.out.println("Эпик-задача обновлена: " + returnedEpicTask);
+                    taskManager.updateEpicTask(updatedEpicTask);
+                    System.out.println("Эпик-задача обновлена: "
+                            + taskManager.getEpicTaskByID(updatedEpicTask.getTaskID()));
                 } else if (Integer.parseInt(taskType) == 3) {
                     SubTask oldSubTask = null;
                     List<SubTask> subTaskArrayList = taskManager.getSubTasksList();
@@ -161,8 +159,9 @@ public class Main {
                     SubTask updatedSubTask = new SubTask(newTitle, newDescription,
                             chooseTaskStatus(scanner), oldSubTask.getEpicTaskID());
                     updatedSubTask.setTaskID(oldSubTask.getTaskID());
-                    SubTask returnedSubTask = taskManager.updateSubTask(updatedSubTask);
-                    System.out.println("Подзадача обновлена: " + returnedSubTask);
+                    taskManager.updateSubTask(updatedSubTask);
+                    System.out.println("Подзадача обновлена: "
+                            + taskManager.getSubTaskByID(updatedSubTask.getTaskID()));
                 } else {
                     System.out.println("Извините, такой команды пока нет. Повторите попытку");
                 }

@@ -45,4 +45,5 @@ class ManagersTest {
         assertTrue(historyList.isEmpty(), "Список должен быть пустым!");
         assertEquals(0, historyList.size(), "Список должен быть пустым!");
     }
+
 }
