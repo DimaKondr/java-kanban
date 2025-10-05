@@ -27,20 +27,16 @@ class FileBackedTaskManagerTest {
         }
     }
 
-    //Проверяем сохранение и загрузку пустого файла.
+    //Проверяем загрузку из пустого файла.
     @Test
     void createAndLoadFromEmptyFileTesting() {
-        //Создаем менеджер и делаем сохранение при полном отсутствии задач.
-        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(tasksStorageTempFile);
-        fileBackedTaskManager.saveTasksToFile();
-
-        //Создаем нового менеджера с загрузкой из файла
-        FileBackedTaskManager newFileBackedTaskManager = FileBackedTaskManager.loadTasksFromFile(tasksStorageTempFile);
+        //Создаем нового менеджера с загрузкой из пустого файла
+        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadTasksFromFile(tasksStorageTempFile);
 
         //Проверяем, что все списки нового менеджера пустые
-        assertTrue(newFileBackedTaskManager.getTasksList().isEmpty());
-        assertTrue(newFileBackedTaskManager.getEpicTasksList().isEmpty());
-        assertTrue(newFileBackedTaskManager.getSubTasksList().isEmpty());
+        assertTrue(fileBackedTaskManager.getTasksList().isEmpty());
+        assertTrue(fileBackedTaskManager.getEpicTasksList().isEmpty());
+        assertTrue(fileBackedTaskManager.getSubTasksList().isEmpty());
     }
 
     //Проверяем метод сохранения задач в файл.
@@ -62,8 +58,7 @@ class FileBackedTaskManagerTest {
         fileBackedTaskManager.addSubTask(subTask1);
         fileBackedTaskManager.addSubTask(subTask2);
 
-        //Сохраняем задачи в файл и создаем нового менеджера через загрузку из файла.
-        fileBackedTaskManager.saveTasksToFile();
+        //Создаем нового менеджера через загрузку из файла.
         FileBackedTaskManager newManager = FileBackedTaskManager.loadTasksFromFile(tasksStorageTempFile);
 
         //Проверим количество задач в списках нового менеджера.

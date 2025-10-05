@@ -94,7 +94,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     //Сохраняем все задачи в файл.
-    public void saveTasksToFile() {
+    private void saveTasksToFile() {
         try (Writer fileWriter = new FileWriter(tasksStorageFile)) {
             StringBuilder tasksForFile = new StringBuilder("id,type,title,status,description,epic\n");
             for (Task task : getTasksList()) {
