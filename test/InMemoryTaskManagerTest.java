@@ -653,4 +653,5 @@ class InMemoryTaskManagerTest {
         //Проверим, что возвращается один и тот же объект после проведения операций с менеджером истории.
         assertSame(historyManager, newHistoryManager, "Должен вернуться один и тот же экземпляр!");
     }
+
 }

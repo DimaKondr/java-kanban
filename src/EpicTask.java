@@ -46,9 +46,32 @@ public class EpicTask extends Task {
         epicSubTaskIDList.remove(subTaskID);
     }
 
+    //Переводим Epic-задачу в строку для сохранения в файл.
+    public String toStringForFile(EpicTask epicTaskToString) {
+        return epicTaskToString.taskID + "," + TaskType.EPICTASK + "," + epicTaskToString.title + ","
+                + epicTaskToString.taskStatus + "," + epicTaskToString.description;
+    }
+
+    //Создаем Epic-задачу из полученной строки.
+    public static EpicTask createEpicTaskFromFile(String dataFromFile) {
+        String[] splitEpicTask = dataFromFile.split(",");
+        int taskID = Integer.parseInt(splitEpicTask[0]);
+        TaskType taskType = TaskType.valueOf(splitEpicTask[1]);
+        String title = splitEpicTask[2];
+        TaskStatus taskStatus = TaskStatus.valueOf(splitEpicTask[3]);
+        String description = splitEpicTask[4];
+
+        EpicTask epicTask = new EpicTask(title, description, taskStatus);
+        epicTask.setTaskType(taskType);
+        epicTask.setTaskID(taskID);
+
+        return epicTask;
+    }
+
     @Override
     public String toString() {
         return "EpicTask{title='" + title + "', description='" + description + "', taskStatus='"
                 + taskStatus + "', epicTaskID='" + taskID + "', epicSubTaskList='" + epicSubTaskIDList + "'}";
     }
+
 }

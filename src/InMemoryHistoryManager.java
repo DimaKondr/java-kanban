@@ -84,4 +84,5 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         if (size > 0) size -= 1;
     }
+
 }

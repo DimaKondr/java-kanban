@@ -69,31 +69,28 @@ public class InMemoryTaskManager implements TaskManager {
         return subTasksOfEpicTask;
     }
 
-    //Полное очищение списка всех простых задач. Возвращаем пустой список.
+    //Полное очищение списка всех простых задач.
     @Override
-    public Map<Integer, Task> clearTasksLists() {
+    public void clearTasksLists() {
         tasksList.clear();
-        return new HashMap<>(tasksList);
     }
 
-    //Полное очищение списка всех Epic-задач. Возвращаем пустой список.
+    //Полное очищение списка всех Epic-задач.
     @Override
-    public Map<Integer, EpicTask> clearEpicTasksLists() {
+    public void clearEpicTasksLists() {
         epicTasksList.clear();
         subTasksList.clear();
-        return new HashMap<>(epicTasksList);
     }
 
-    //Полное очищение списка всех подзадач. Возвращаем пустой список.
+    //Полное очищение списка всех подзадач.
     @Override
-    public Map<Integer, SubTask> clearSubTasksLists() {
+    public void clearSubTasksLists() {
         subTasksList.clear();
         for (Integer key : epicTasksList.keySet()) {
             EpicTask epicTask = epicTasksList.get(key);
             epicTask.clearEpicSubTaskIDList();
             chooseEpicTaskStatus(epicTask);
         }
-        return new HashMap<>(subTasksList);
     }
 
     //Получение простой задачи по ее ID. Возвращаем имеющуюся простую задачу.
@@ -132,25 +129,23 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    //Добавление в список новой простой задачи. Возвращаем новую простую задачу.
+    //Добавление в список новой простой задачи.
     @Override
-    public Task addTask(Task task) {
+    public void addTask(Task task) {
         task.setTaskID(generateTaskID());
         tasksList.put(task.getTaskID(), createTaskCopy(task));
-        return createTaskCopy(task);
     }
 
-    //Добавление в список новой Epic-задачи. Возвращаем новую Epic-задачу.
+    //Добавление в список новой Epic-задачи.
     @Override
-    public EpicTask addEpicTask(EpicTask epicTask) {
+    public void addEpicTask(EpicTask epicTask) {
         epicTask.setTaskID(generateTaskID());
         epicTasksList.put(epicTask.getTaskID(), createEpicTaskCopy(epicTask));
-        return createEpicTaskCopy(epicTask);
     }
 
-    //Добавление в список новой подзадачи. Возвращаем новую подзадачу.
+    //Добавление в список новой подзадачи.
     @Override
-    public SubTask addSubTask(SubTask subTask) {
+    public void addSubTask(SubTask subTask) {
         subTask.setTaskID(generateTaskID());
         int subTaskID = subTask.getTaskID();
         int epicTaskID = subTask.getEpicTaskID();
@@ -160,30 +155,27 @@ public class InMemoryTaskManager implements TaskManager {
             epicTask.addSubTaskID(subTask.getTaskID());
             chooseEpicTaskStatus(epicTask);
         }
-        return createSubTaskCopy(subTask);
     }
 
-    //Обновление информации об имеющейся простой задаче. Возвращаем обновленную простую задачу.
+    //Обновление информации об имеющейся простой задаче.
     @Override
-    public Task updateTask(Task updatedTask) {
+    public void updateTask(Task updatedTask) {
         tasksList.put(updatedTask.getTaskID(), createTaskCopy(updatedTask));
-        return createTaskCopy(updatedTask);
     }
 
-    //Обновление информации об имеющейся Epic-задаче. Возвращаем обновленную Epic-задачу.
+    //Обновление информации об имеющейся Epic-задаче.
     @Override
-    public EpicTask updateEpicTask(EpicTask updatedEpicTask) {
+    public void updateEpicTask(EpicTask updatedEpicTask) {
         EpicTask oldEpicTask = epicTasksList.get(updatedEpicTask.getTaskID());
         List<Integer> oldEpicSubTaskIDList = oldEpicTask.getEpicSubTaskIDList();
         updatedEpicTask.setEpicSubTaskIDList(oldEpicSubTaskIDList);
         chooseEpicTaskStatus(updatedEpicTask);
         epicTasksList.put(updatedEpicTask.getTaskID(), createEpicTaskCopy(updatedEpicTask));
-        return createEpicTaskCopy(updatedEpicTask);
     }
 
-    //Обновление информации об имеющейся подзадаче. Возвращаем обновленную подзадачу.
+    //Обновление информации об имеющейся подзадаче.
     @Override
-    public SubTask updateSubTask(SubTask updatedSubTask) {
+    public void updateSubTask(SubTask updatedSubTask) {
         int updatedSubTaskID = updatedSubTask.getTaskID();
         int epicTaskID = updatedSubTask.getEpicTaskID();
         if (updatedSubTaskID != epicTaskID && epicTasksList.containsKey(epicTaskID)) {
@@ -191,7 +183,6 @@ public class InMemoryTaskManager implements TaskManager {
             EpicTask epicTask = epicTasksList.get(updatedSubTask.getEpicTaskID());
             chooseEpicTaskStatus(epicTask);
         }
-        return createSubTaskCopy(updatedSubTask);
     }
 
     //Удаление простой задачи по ее ID.
