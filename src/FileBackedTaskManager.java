@@ -1,12 +1,17 @@
 import java.io.*;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private File tasksStorageFile; //Здесь храним путь к файлу для сохранения задач.
 
     public FileBackedTaskManager(File tasksStorageFile) {
         super();
-        this.tasksStorageFile = tasksStorageFile;
+        if (tasksStorageFile != null) {
+            this.tasksStorageFile = tasksStorageFile;
+        } else {
+            throw new IllegalArgumentException("Предоставлен null-путь!");
+        }
     }
 
     //Полное очищение списка всех простых задач в файле.
@@ -96,7 +101,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     //Сохраняем все задачи в файл.
     private void saveTasksToFile() {
         try (Writer fileWriter = new FileWriter(tasksStorageFile)) {
-            StringBuilder tasksForFile = new StringBuilder("id,type,title,status,description,epic\n");
+            StringBuilder tasksForFile = new StringBuilder("id,type,title,status,description,epic,"
+                    + "duration(minutes),startTime,endTimeOfEpic\n");
             for (Task task : getTasksList()) {
                 tasksForFile.append(task.toStringForFile(task)).append("\n");
             }
@@ -146,12 +152,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     //Реализуем пользовательский сценарий.
     public static void main(String[] args) {
-        Task task1 = new Task("task1", "taskDescription", TaskStatus.NEW);
-        Task task2 = new Task("task2", "taskDescription_11", TaskStatus.IN_PROGRESS);
+        Task task1 = new Task("task1", "taskDescription", TaskStatus.NEW, 45L);
+        Task task2 = new Task("task2", "taskDescription_11", TaskStatus.IN_PROGRESS, 45L);
+        task2.setStartTime(LocalDateTime.of(2025, 10, 31, 10, 0));
         EpicTask epicTask1 = new EpicTask("epic1", "epicDescription", TaskStatus.NEW);
         EpicTask epicTask2 = new EpicTask("epic2", "epicDescription_11", TaskStatus.NEW);
-        SubTask subTask1 = new SubTask("subTask1", "subDescription", TaskStatus.DONE, 3);
-        SubTask subTask2 = new SubTask("subTask2", "subDescription_11", TaskStatus.NEW, 4);
+        SubTask subTask1 = new SubTask("subTask1", "subDescription", TaskStatus.DONE, 3,15L);
+        SubTask subTask2 = new SubTask("subTask2", "subDescription_11", TaskStatus.NEW, 4, 20L);
+        subTask1.setStartTime(LocalDateTime.of(2025, 10, 31, 14, 15));
         File tasksStorageFile = new File("TasksStorageFile.csv");
         try {
             tasksStorageFile.createNewFile();
