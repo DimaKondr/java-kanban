@@ -107,7 +107,7 @@ public class Task {
     }
 
     //Получаем время завершения выполнения задачи
-    public LocalDateTime getEndTime(){
+    public LocalDateTime getEndTime() {
         if (startTime != null) {
             return startTime.plus(duration);
         } else {

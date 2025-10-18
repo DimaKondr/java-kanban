@@ -93,7 +93,7 @@ public class EpicTask extends Task {
 
     //Получаем время завершения выполнения Epic-задачи
     @Override
-    public LocalDateTime getEndTime(){
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
