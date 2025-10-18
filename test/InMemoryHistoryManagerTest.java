@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +18,9 @@ class InMemoryHistoryManagerTest {
     void createTestingTasks() {
         taskManager = Managers.getDefault();
         historyManager =  taskManager.getHistoryManager();
-        task = new Task("Тест Таск", "Тестовый таск", TaskStatus.NEW);
+        task = new Task("Тест Таск", "Тестовый таск", TaskStatus.NEW, 10L);
         epicTask = new EpicTask("Тест Эпик", "Тестовый эпик", TaskStatus.NEW);
-        subTask = new SubTask("Тест Сабтаск", "Тестовый сабтаск", TaskStatus.NEW, 2);
+        subTask = new SubTask("Тест Сабтаск", "Тестовый сабтаск", TaskStatus.NEW, 2, 15L);
         taskManager.addTask(task);
         taskManager.addEpicTask(epicTask);
         taskManager.addSubTask(subTask);
@@ -90,7 +91,7 @@ class InMemoryHistoryManagerTest {
         viewedTask.taskStatus = TaskStatus.IN_PROGRESS;
         viewedEpicTask.title = "ChangedТест Эпик";
         viewedEpicTask.description = "ChangedТестовый эпик";
-        SubTask otherSubTask = new SubTask("Саб2", "Саб22", TaskStatus.IN_PROGRESS, 2);
+        SubTask otherSubTask = new SubTask("Саб2", "Саб22", TaskStatus.IN_PROGRESS, 2, 20L);
         taskManager.addSubTask(otherSubTask);
         viewedEpicTask.addSubTaskID(4);
         viewedSubTask.title = "ChangedТест Сабтаск";
@@ -115,12 +116,14 @@ class InMemoryHistoryManagerTest {
         assertEquals("ChangedТестовый таск", viewedTask2.description, "Несовпадение полей!");
         assertEquals(TaskStatus.IN_PROGRESS, viewedTask2.taskStatus, "Несовпадение полей!");
         assertEquals(1, viewedTask2.taskID, "Несовпадение полей!");
+        assertEquals(Duration.ofMinutes(10), viewedTask2.getDuration(), "Длительность не совпадает!");
 
         //Проверяем, что эпики совпадают по всем полям.
         assertEquals("ChangedТест Эпик", viewedEpicTask2.title, "Несовпадение полей!");
         assertEquals("ChangedТестовый эпик", viewedEpicTask2.description, "Несовпадение полей!");
         assertEquals(TaskStatus.IN_PROGRESS, viewedEpicTask2.taskStatus, "Несовпадение полей!");
         assertEquals(2, viewedEpicTask2.taskID, "Несовпадение полей!");
+        assertEquals(Duration.ofMinutes(35), viewedEpicTask2.getDuration(), "Длительность не совпадает!");
         assertTrue(viewedEpicTask2.getEpicSubTaskIDList().contains(4));
         assertTrue(viewedEpicTask2.getEpicSubTaskIDList().contains(3));
 
@@ -130,6 +133,7 @@ class InMemoryHistoryManagerTest {
         assertEquals(TaskStatus.IN_PROGRESS, viewedSubTask2.taskStatus, "Несовпадение полей!");
         assertEquals(3, viewedSubTask2.taskID, "Несовпадение полей!");
         assertEquals(5, viewedSubTask2.getEpicTaskID(), "Несовпадение полей!");
+        assertEquals(Duration.ofMinutes(15), viewedSubTask2.getDuration(), "Длительность не совпадает!");
 
         //Проверяем, что сохраненная в истории просмотра задача не изменится, в случае ее обновления в менеджере задач.
         List<Task> historyList = historyManager.getHistory();
@@ -142,12 +146,14 @@ class InMemoryHistoryManagerTest {
         assertEquals("Тестовый таск", testedTask.description, "Несовпадение полей!");
         assertEquals(TaskStatus.NEW, testedTask.taskStatus, "Несовпадение полей!");
         assertEquals(1, testedTask.taskID, "Несовпадение полей!");
+        assertEquals(Duration.ofMinutes(10), testedTask.getDuration(), "Длительность не совпадает!");
 
         //Поля эпиков не изменились.
         assertEquals("Тест Эпик", testedEpicTask.title, "Несовпадение полей!");
         assertEquals("Тестовый эпик", testedEpicTask.description, "Несовпадение полей!");
         assertEquals(TaskStatus.NEW, testedEpicTask.taskStatus, "Несовпадение полей!");
         assertEquals(2, testedEpicTask.taskID, "Несовпадение полей!");
+        assertEquals(Duration.ofMinutes(15), testedEpicTask.getDuration(), "Длительность не совпадает!");
         assertFalse(testedEpicTask.getEpicSubTaskIDList().contains(4));
         assertTrue(testedEpicTask.getEpicSubTaskIDList().contains(3));
 
@@ -157,6 +163,7 @@ class InMemoryHistoryManagerTest {
         assertEquals(TaskStatus.NEW, testedSubTask.taskStatus, "Несовпадение полей!");
         assertEquals(3, testedSubTask.taskID, "Несовпадение полей!");
         assertEquals(2, testedSubTask.getEpicTaskID(), "Несовпадение полей!");
+        assertEquals(Duration.ofMinutes(15), testedSubTask.getDuration(), "Длительность не совпадает!");
     }
 
     //Проверяем корректность добавления задачи в конец двусвязного списка,

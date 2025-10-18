@@ -103,7 +103,9 @@ public class Main {
                         + "1 - Простая задача\n2 - Epic-задача\n3 - Подзадача Epic-задачи");
                 String taskType = scanner.nextLine();
                 if (Integer.parseInt(taskType) == 1) {
-                    Task task = new Task(title, description, taskStatus);
+                    System.out.println("Введите предполагаемую длительность выполнения задачи в минутах:");
+                    String duration = scanner.nextLine();
+                    Task task = new Task(title, description, taskStatus, Long.parseLong(duration));
                     taskManager.addTask(task);
                     System.out.println("Создана новая задача: " + taskManager.getTaskByID(task.getTaskID()));
                 } else if (Integer.parseInt(taskType) == 2) {
@@ -111,9 +113,12 @@ public class Main {
                     taskManager.addEpicTask(epicTask);
                     System.out.println("Создана новая задача: " + taskManager.getEpicTaskByID(epicTask.getTaskID()));
                 } else if (Integer.parseInt(taskType) == 3) {
+                    System.out.println("Введите предполагаемую длительность выполнения задачи в минутах:");
+                    String duration = scanner.nextLine();
                     System.out.println("В какую Epic-задачу вы хотите добавить подзадачу?");
                     String epicTaskID = scanner.nextLine();
-                    SubTask subTask = new SubTask(title, description, taskStatus, Integer.parseInt(epicTaskID));
+                    SubTask subTask = new SubTask(title, description, taskStatus, Integer.parseInt(epicTaskID),
+                            Long.parseLong(duration));
                     taskManager.addSubTask(subTask);
                     System.out.println("Добавлена новая подзадача: " + taskManager.getSubTaskByID(subTask.getTaskID()));
                 } else {
@@ -135,7 +140,8 @@ public class Main {
                     for (Task task : taskArrayList) {
                         if (task.getTaskID() == Integer.parseInt(taskID)) oldTask = task;
                     }
-                    Task updatedTask = new Task(newTitle, newDescription, chooseTaskStatus(scanner));
+                    Task updatedTask = new Task(newTitle, newDescription, chooseTaskStatus(scanner),
+                            oldTask.getDuration().toMinutes());
                     updatedTask.setTaskID(oldTask.getTaskID());
                     taskManager.updateTask(updatedTask);
                     System.out.println("Задача обновлена: " + taskManager.getTaskByID(updatedTask.getTaskID()));
@@ -156,8 +162,8 @@ public class Main {
                     for (SubTask subTask : subTaskArrayList) {
                         if (subTask.getTaskID() == Integer.parseInt(taskID)) oldSubTask = subTask;
                     }
-                    SubTask updatedSubTask = new SubTask(newTitle, newDescription,
-                            chooseTaskStatus(scanner), oldSubTask.getEpicTaskID());
+                    SubTask updatedSubTask = new SubTask(newTitle, newDescription, chooseTaskStatus(scanner),
+                            oldSubTask.getEpicTaskID(), oldSubTask.getDuration().toMinutes());
                     updatedSubTask.setTaskID(oldSubTask.getTaskID());
                     taskManager.updateSubTask(updatedSubTask);
                     System.out.println("Подзадача обновлена: "

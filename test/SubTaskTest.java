@@ -8,7 +8,7 @@ class SubTaskTest {
 
     @BeforeEach
     void createSubTask() {
-        subTask = new SubTask("Тест", "Тестовый сабтаск",TaskStatus.NEW, 15);
+        subTask = new SubTask("Тест", "Тестовый сабтаск",TaskStatus.NEW, 15, 20L);
         subTask.setTaskID(22);
     }
 
@@ -21,9 +21,9 @@ class SubTaskTest {
     //Тестируем корректность метода Equals родительского класса.
     @Test
     void testParentEquals() {
-        SubTask subTask1 = new SubTask("Тест-1", "Тестовый сабтаск-1", TaskStatus.DONE, 4);
+        SubTask subTask1 = new SubTask("Тест-1", "Тестовый сабтаск-1", TaskStatus.DONE, 4, 17L);
         subTask1.setTaskID(22);
-        SubTask subTask2 = new SubTask("Тест", "Тестовый сабтаск", TaskStatus.NEW, 15);
+        SubTask subTask2 = new SubTask("Тест", "Тестовый сабтаск", TaskStatus.NEW, 15, 21L);
         subTask2.setTaskID(33);
 
         assertTrue(subTask.equals(subTask1));
@@ -36,9 +36,9 @@ class SubTaskTest {
     //Тестируем корректность метода HashCode родительского класса.
     @Test
     void testParentHashCode() {
-        SubTask subTask1 = new SubTask("Тест-1", "Тестовый сабтаск-1", TaskStatus.DONE, 4);
+        SubTask subTask1 = new SubTask("Тест-1", "Тестовый сабтаск-1", TaskStatus.DONE, 4, 23L);
         subTask1.setTaskID(22);
-        SubTask subTask2 = new SubTask("Тест", "Тестовый сабтаск", TaskStatus.NEW, 15);
+        SubTask subTask2 = new SubTask("Тест", "Тестовый сабтаск", TaskStatus.NEW, 15, 31L);
         subTask2.setTaskID(33);
 
         assertEquals(subTask, subTask1);

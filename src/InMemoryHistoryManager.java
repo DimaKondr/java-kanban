@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryHistoryManager implements HistoryManager {
     //В taskViewHistory храним десять последних просмотренных задач.
@@ -19,17 +20,17 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
             tasksList.add(node.task);
         }
-        List<Task> tasksListCopy  = new ArrayList<>();
-        for (Task task : tasksList) {
-            if (task instanceof SubTask) {
-                tasksListCopy.add(new SubTask((SubTask) task));
-            } else if (task instanceof EpicTask) {
-                tasksListCopy.add(new EpicTask((EpicTask) task));
-            } else {
-                tasksListCopy.add(new Task((Task) task));
-            }
-        }
-        return tasksListCopy;
+        return tasksList.stream()
+                .map(task -> {
+                    if (task instanceof SubTask) {
+                        return new SubTask((SubTask) task);
+                    } else if (task instanceof EpicTask) {
+                        return new EpicTask((EpicTask) task);
+                    } else {
+                        return new Task((Task) task);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     //Добавление просмотренной задачи в список просмотренных задач.

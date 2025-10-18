@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +78,15 @@ class EpicTaskTest {
 
         assertTrue(epicTask.epicSubTaskIDList.contains(7), "ID не найден.");
         assertFalse(epicTask.epicSubTaskIDList.contains(5), "ID найден.");
+    }
+
+    //Проверяем корректность назначения и получения времени окончания выполнения задачи.
+    @Test
+    void setAndGetEndTimeTesting() {
+        epicTask.setEndTime(LocalDateTime.of(2025, 10, 31, 15, 0));
+        LocalDateTime dateTimeTest = epicTask.getEndTime();
+
+        assertEquals(LocalDateTime.of(2025, 10, 31, 15, 0), dateTimeTest, "Время не совпадает.");
     }
 
     //Тестируем корректность метода Equals родительского класса.

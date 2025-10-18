@@ -13,6 +13,9 @@ public interface TaskManager {
     //Получение списка подзадач определенной Epic-задачи. Возвращаем список.
     List<SubTask> getSubTasksOfEpicTask(Integer epicTaskID);
 
+    //Получение списка задач простого типа и подзадач всех Epic-задач, отсортированные по времени начала.
+    List<Task> getPrioritizedTasks();
+
     //Полное очищение списка всех простых задач.
     void clearTasksLists();
 
@@ -60,6 +63,12 @@ public interface TaskManager {
 
     //Определение статуса Epic-задачи на основе статусов входящих в нее подзадач.
     void chooseEpicTaskStatus(EpicTask epicTask);
+
+    //Расчет длительности, времени начала и окончания Epic-задачи на основе длительности входящих в нее подзадач.
+    void calculateEpicTaskDuration(EpicTask epicTask);
+
+    //Метод для проверки пересечения по времени новой задачи с уже имеющимися задачами.
+    boolean isOverlapWithCurrentTasks(Task task);
 
     //Метод для генерации ID задач.
     int generateTaskID();
