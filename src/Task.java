@@ -1,3 +1,6 @@
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -6,13 +9,16 @@ public class Task {
     public TaskStatus taskStatus; //Здесь храним статус задачи.
     public TaskType taskType; //Здесь храним тип задачи.
     public int taskID; //Здесь храним ID задачи.
+    public Duration duration; //Здесь храним длительность выполнения задачи.
+    public LocalDateTime startTime;//Здесь храним время начала выполнения задачи.
 
     //Конструктор для создания новых объектов.
-    public Task(String title, String description, TaskStatus taskStatus) {
+    public Task(String title, String description, TaskStatus taskStatus, Long duration) {
         this.title = title;
         this.description = description;
         this.taskStatus = taskStatus;
         this.taskType = TaskType.TASK;
+        this.duration = Duration.ofMinutes(duration);
     }
 
     //Конструктор для создания копии объекта.
@@ -22,6 +28,8 @@ public class Task {
         this.taskStatus = taskForCopy.taskStatus;
         this.taskID = taskForCopy.taskID;
         this.taskType = taskForCopy.taskType;
+        this.duration = taskForCopy.duration;
+        this.startTime = taskForCopy.startTime;
     }
 
     //Получаем ID задачи.
@@ -49,10 +57,33 @@ public class Task {
         this.taskType = taskType;
     }
 
+    //Получаем время начала выполнения задачи
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    //Задаем время начала выполнения задачи
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    //Получаем длительность выполнения задачи
+    public Duration getDuration() {
+        return duration;
+    }
+
+    //Задаем длительность выполнения задачи
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
     //Переводим задачу в строку для сохранения в файл.
     public String toStringForFile(Task taskToString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy|HH:mm");
+        String formatedStartTime = taskToString.getStartTime() == null ? "-" : formatter.format(taskToString.getStartTime());
         return taskToString.taskID + "," + taskToString.taskType + "," + taskToString.title + ","
-                + taskToString.taskStatus + "," + taskToString.description;
+                + taskToString.taskStatus + "," + taskToString.description + "," + "-" + ","
+                + taskToString.getDuration().toMinutes() + "," + formatedStartTime + "," + "-";
     }
 
     //Создаем задачу из полученной строки.
@@ -63,12 +94,25 @@ public class Task {
         String title = splitTask[2];
         TaskStatus taskStatus = TaskStatus.valueOf(splitTask[3]);
         String description = splitTask[4];
+        Long duration = Long.parseLong(splitTask[6]);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy|HH:mm");
+        LocalDateTime startTime = splitTask[7].equals("-") ? null : LocalDateTime.parse(splitTask[7], formatter);
 
-        Task task = new Task(title, description, taskStatus);
+        Task task = new Task(title, description, taskStatus, duration);
         task.setTaskType(taskType);
         task.setTaskID(taskID);
+        task.setStartTime(startTime);
 
         return task;
+    }
+
+    //Получаем время завершения выполнения задачи
+    public LocalDateTime getEndTime() {
+        if (startTime != null) {
+            return startTime.plus(duration);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -87,7 +131,8 @@ public class Task {
     @Override
     public String toString() {
         return "Task{title='" + title + "', description='" + description + "', taskStatus='"
-                + taskStatus + "', taskID='" + taskID + "'}";
+                + taskStatus + "', taskID='" + taskID + "', duration='"
+                + duration + "', startTime='" + startTime + "', endTime='" + getEndTime() + "'}";
     }
 
 }
