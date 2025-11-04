@@ -1,5 +1,9 @@
+package tasks_test;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tasks.SubTask;
+import tasks.TaskStatus;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,7 +12,7 @@ class SubTaskTest {
 
     @BeforeEach
     void createSubTask() {
-        subTask = new SubTask("Тест", "Тестовый сабтаск",TaskStatus.NEW, 15, 20L);
+        subTask = new SubTask("Тест", "Тестовый сабтаск", TaskStatus.NEW, 15, 20L);
         subTask.setTaskID(22);
     }
 

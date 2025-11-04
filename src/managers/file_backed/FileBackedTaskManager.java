@@ -1,3 +1,10 @@
+package managers.file_backed;
+
+import managers.ManagerSaveException;
+import managers.in_memory.InMemoryTaskManager;
+import managers.interfaces.TaskManager;
+import tasks.*;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
@@ -119,7 +126,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     //Выгружаем из файла все сохраненные в файле задачи.
-    static FileBackedTaskManager loadTasksFromFile(File tasksStorageFile) {
+    public static FileBackedTaskManager loadTasksFromFile(File tasksStorageFile) {
         if (!tasksStorageFile.exists()) {
             throw new ManagerSaveException("Файл не существует!");
         }

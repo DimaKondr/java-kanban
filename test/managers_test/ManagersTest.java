@@ -1,4 +1,11 @@
+package managers_test;
+
+import managers.Managers;
+import managers.in_memory.InMemoryTaskManager;
+import managers.interfaces.HistoryManager;
+import managers.interfaces.TaskManager;
 import org.junit.jupiter.api.Test;
+import tasks.Task;
 
 import java.util.List;
 

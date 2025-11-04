@@ -1,3 +1,5 @@
+package tasks;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -80,7 +82,8 @@ public class Task {
     //Переводим задачу в строку для сохранения в файл.
     public String toStringForFile(Task taskToString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy|HH:mm");
-        String formatedStartTime = taskToString.getStartTime() == null ? "-" : formatter.format(taskToString.getStartTime());
+        String formatedStartTime = taskToString.getStartTime()
+                == null ? "-" : formatter.format(taskToString.getStartTime());
         return taskToString.taskID + "," + taskToString.taskType + "," + taskToString.title + ","
                 + taskToString.taskStatus + "," + taskToString.description + "," + "-" + ","
                 + taskToString.getDuration().toMinutes() + "," + formatedStartTime + "," + "-";
@@ -130,7 +133,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{title='" + title + "', description='" + description + "', taskStatus='"
+        return "tasks.Task{title='" + title + "', description='" + description + "', taskStatus='"
                 + taskStatus + "', taskID='" + taskID + "', duration='"
                 + duration + "', startTime='" + startTime + "', endTime='" + getEndTime() + "'}";
     }

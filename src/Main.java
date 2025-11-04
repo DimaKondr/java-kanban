@@ -1,3 +1,11 @@
+import managers.Managers;
+import managers.interfaces.HistoryManager;
+import managers.interfaces.TaskManager;
+import tasks.EpicTask;
+import tasks.SubTask;
+import tasks.Task;
+import tasks.TaskStatus;
+
 import java.util.*;
 
 public class Main {

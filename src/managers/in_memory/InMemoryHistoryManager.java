@@ -1,3 +1,10 @@
+package managers.in_memory;
+
+import managers.interfaces.HistoryManager;
+import tasks.EpicTask;
+import tasks.SubTask;
+import tasks.Task;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
