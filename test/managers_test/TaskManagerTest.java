@@ -1,5 +1,10 @@
+package managers_test;
+
+import managers.interfaces.HistoryManager;
+import managers.interfaces.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tasks.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -329,8 +334,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         Task testedTask = taskManager.getTaskByID(10);
 
-        //Проверяем, что сохранился таск класса Task.
-        assertInstanceOf(Task.class, testedTask, "Объект должен быть класса Task");
+        //Проверяем, что сохранился таск класса tasks.Task.
+        assertInstanceOf(Task.class, testedTask, "Объект должен быть класса tasks.Task");
 
         //Проверяем, что при добавлении таска корректно сохраняются заголовок, описание, статус и ID.
         assertEquals("Это!%тестовая@@$%??таска_sldkfjalewf", testedTask.title,
@@ -360,8 +365,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         EpicTask testedEpicTask = taskManager.getEpicTaskByID(10);
 
-        //Проверяем, что сохранился эпик класса EpicTask.
-        assertInstanceOf(EpicTask.class, testedEpicTask, "Объект должен быть класса EpicTask");
+        //Проверяем, что сохранился эпик класса tasks.EpicTask.
+        assertInstanceOf(EpicTask.class, testedEpicTask, "Объект должен быть класса tasks.EpicTask");
 
         //Проверяем, что при добавлении эпика корректно сохраняются заголовок, описание, статус и ID,
         //а также, что имеется пустой лист для сохранения ID будущих сабтасков.
@@ -393,9 +398,15 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         //Проверяем, что сабтаску присвоен ожидаемый ID
         assertEquals(10, subTaskWithEpicNumber.getTaskID(), "Присвоен неверный ID");
+
         //Проверяем, что сабтаск с определенным ID не будет внесен в спискок сабтасков менеджера,
         //при условии, что ID этого же сабтаска прописан как ID эпика, к которому относится сабтаск.
-        assertNull(taskManager.getSubTaskByID(subTaskWithEpicNumber.getTaskID()), "ID найден.");
+        try {
+            taskManager.getSubTaskByID(subTaskWithEpicNumber.getTaskID());
+        } catch (NotFoundException e) {
+            assertEquals("Не существует подзадачи с указанным ID: "
+                    + subTaskWithEpicNumber.getTaskID(), e.getMessage());
+        }
 
         EpicTask otherNewEpicTask = new EpicTask("Test", "Epic test", TaskStatus.NEW);
         taskManager.addEpicTask(otherNewEpicTask);
@@ -406,8 +417,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         EpicTask testedEpicTask = taskManager.getEpicTaskByID(10);
         SubTask testedSubTask = taskManager.getSubTaskByID(11);
 
-        //Проверяем, что сохранился эпик класса EpicTask.
-        assertInstanceOf(SubTask.class, testedSubTask, "Объект должен быть класса SubTask");
+        //Проверяем, что сохранился эпик класса tasks.EpicTask.
+        assertInstanceOf(SubTask.class, testedSubTask, "Объект должен быть класса tasks.SubTask");
 
         //Проверяем, что при добавлении сабтаска корректно сохраняются заголовок, описание, статус и ID,
         //а также, что в этом же сабтаске верно сохранен номер ID эпика, к которому относится сабтаск.
@@ -518,7 +529,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
         SubTask someSubTask2 = taskManager.getSubTaskByID(8);
 
         //Проверяем, что в списке эпиков нет эпика с ID 15.
-        assertNull(taskManager.getEpicTaskByID(15), "ID найден.");
+        try {
+            taskManager.getEpicTaskByID(15);
+        } catch (NotFoundException e) {
+            assertEquals("Не существует Epic-задачи с указанным ID: " + 15, e.getMessage());
+        }
+
         //Проверяем, что сабтаск не сохраняется в эпике, которого нет в списке.
         assertEquals(4, someSubTask2.getEpicTaskID(), "Сабтаск сохранил себя в несуществующий эпик!");
 
@@ -703,7 +719,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
         otherTask2.setStartTime(LocalDateTime.of(2025, 10, 31, 10, 40));
         assertTrue(taskManager.isOverlapWithCurrentTasks(otherTask2), "Задачи должны пересекаться!");
         taskManager.addTask(otherTask2);
-        assertNull(taskManager.getTaskByID(otherTask2.getTaskID()), "Задача не должна быть добавлена в общий список!");
+
+        try {
+            taskManager.getTaskByID(otherTask2.getTaskID());
+        } catch (NotFoundException e) {
+            assertEquals("Не существует задачи с указанным ID: " + otherTask2.getTaskID(), e.getMessage());
+        }
+
         assertFalse(taskManager.getPrioritizedTasks().contains(otherTask2),
                 "Задача не должна быть добавлена в список сортировки по времени!");
 
@@ -712,7 +734,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
         otherTask3.setStartTime(LocalDateTime.of(2025, 10, 31, 8, 50));
         assertTrue(taskManager.isOverlapWithCurrentTasks(otherTask3), "Задачи должны пересекаться!");
         taskManager.addTask(otherTask3);
-        assertNull(taskManager.getTaskByID(otherTask3.getTaskID()), "Задача не должна быть добавлена в общий список!");
+
+        try {
+            taskManager.getTaskByID(otherTask3.getTaskID());
+        } catch (NotFoundException e) {
+            assertEquals("Не существует задачи с указанным ID: " + otherTask3.getTaskID(), e.getMessage());
+        }
+
         assertFalse(taskManager.getPrioritizedTasks().contains(otherTask3),
                 "Задача не должна быть добавлена в список сортировки по времени!");
 
@@ -721,7 +749,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
         otherTask4.setStartTime(LocalDateTime.of(2025, 10, 31, 9, 50));
         assertTrue(taskManager.isOverlapWithCurrentTasks(otherTask4), "Задачи должны пересекаться!");
         taskManager.addTask(otherTask4);
-        assertNull(taskManager.getTaskByID(otherTask4.getTaskID()), "Задача не должна быть добавлена в общий список!");
+
+        try {
+            taskManager.getTaskByID(otherTask4.getTaskID());
+        } catch (NotFoundException e) {
+            assertEquals("Не существует задачи с указанным ID: " + otherTask4.getTaskID(), e.getMessage());
+        }
+
         assertFalse(taskManager.getPrioritizedTasks().contains(otherTask4),
                 "Задача не должна быть добавлена в список сортировки по времени!");
 
@@ -730,7 +764,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
         otherTask5.setStartTime(LocalDateTime.of(2025, 10, 31, 10, 35));
         assertTrue(taskManager.isOverlapWithCurrentTasks(otherTask5), "Задачи должны пересекаться!");
         taskManager.addTask(otherTask5);
-        assertNull(taskManager.getTaskByID(otherTask5.getTaskID()), "Задача не должна быть добавлена в общий список!");
+
+        try {
+            taskManager.getTaskByID(otherTask5.getTaskID());
+        } catch (NotFoundException e) {
+            assertEquals("Не существует задачи с указанным ID: " + otherTask5.getTaskID(), e.getMessage());
+        }
+
         assertFalse(taskManager.getPrioritizedTasks().contains(otherTask5),
                 "Задача не должна быть добавлена в список сортировки по времени!");
 

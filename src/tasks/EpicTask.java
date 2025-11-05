@@ -1,3 +1,5 @@
+package tasks;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +15,7 @@ public class EpicTask extends Task {
     public EpicTask(String title, String description, TaskStatus taskStatus) {
         super(title, description, taskStatus, 0L);
         epicSubTaskIDList = new ArrayList<>();
+        this.taskType = TaskType.EPICTASK;
     }
 
     //Конструктор для создания копии объекта.
@@ -99,7 +102,7 @@ public class EpicTask extends Task {
 
     @Override
     public String toString() {
-        return "EpicTask{title='" + title + "', description='" + description + "', taskStatus='"
+        return "tasks.EpicTask{title='" + title + "', description='" + description + "', taskStatus='"
                 + taskStatus + "', epicTaskID='" + taskID + "', epicSubTaskList='" + epicSubTaskIDList
                 + "', duration='" + duration + "', startTime='" + startTime + "', endTime='" + endTime + "'}";
     }

@@ -1,3 +1,7 @@
+package managers.in_memory;
+
+import tasks.Task;
+
 public class Node {
     public Task task;
     public Node next;

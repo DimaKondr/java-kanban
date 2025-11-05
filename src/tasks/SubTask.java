@@ -1,3 +1,5 @@
+package tasks;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -14,6 +16,7 @@ public class SubTask extends Task {
     public SubTask(SubTask subTaskForCopy) {
         super(subTaskForCopy);
         this.epicTaskID = subTaskForCopy.epicTaskID;
+        this.taskType = TaskType.SUBTASK;
     }
 
     //Получаем ID Epic-задачи в которую входит подзадача.
@@ -54,7 +57,7 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{epicTaskID='" + epicTaskID + "', title='" + title
+        return "tasks.SubTask{epicTaskID='" + epicTaskID + "', title='" + title
                 + "', description='" + description + "', taskStatus='"
                 + taskStatus + "', subTaskID='" + taskID + "', duration='"
                 + duration + "', startTime='" + startTime + "', endTime='" + getEndTime() + "'}";

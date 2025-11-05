@@ -1,8 +1,12 @@
+package managers_test;
+
+import managers.ManagerSaveException;
+import managers.file_backed.FileBackedTaskManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions.*;
+import tasks.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +52,7 @@ class FileBackedTaskManagerTest {
         //Проверяем, что при несуществующем пути выбрасывается исключение
         Assertions.assertThrows(ManagerSaveException.class, () -> fileBackedTaskManager
                         = FileBackedTaskManager.loadTasksFromFile(Path.of(projectFolder.toString(),
-                        "non_existent_file.txt").toFile()), "Должен быть выброшен ManagerSaveException");
+                        "non_existent_file.txt").toFile()), "Должен быть выброшен managers.ManagerSaveException");
 
         //Проверяем обработку некорректного пути
         Assertions.assertThrows(IllegalArgumentException.class,() -> fileBackedTaskManager
@@ -119,8 +123,10 @@ class FileBackedTaskManagerTest {
         assertEquals(TaskStatus.DONE, newEpicTask.taskStatus, "Статусы не совпадают!");
         assertEquals("epicDescription", newEpicTask.description, "Описания не совпадают!");
         assertEquals(Duration.ofMinutes(25), newEpicTask.getDuration(), "Длительность не совпадает!");
-        assertEquals(LocalDateTime.of(2025, 10, 31, 14, 15), newEpicTask.getStartTime(), "Время старта не совпадает!");
-        assertEquals(LocalDateTime.of(2025, 10, 31, 14, 40), newEpicTask.getEndTime(), "Время завершения не совпадает!");
+        assertEquals(LocalDateTime.of(2025, 10, 31, 14, 15), newEpicTask.getStartTime(),
+                "Время старта не совпадает!");
+        assertEquals(LocalDateTime.of(2025, 10, 31, 14, 40), newEpicTask.getEndTime(),
+                "Время завершения не совпадает!");
 
         assertEquals(5, newSubTask.getTaskID(), "ID не совпадают!");
         assertEquals(TaskType.SUBTASK, newSubTask.taskType, "Типы не совпадают!");

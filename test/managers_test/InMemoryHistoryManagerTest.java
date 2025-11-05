@@ -1,5 +1,14 @@
+package managers_test;
+
+import managers.Managers;
+import managers.interfaces.HistoryManager;
+import managers.interfaces.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tasks.EpicTask;
+import tasks.SubTask;
+import tasks.Task;
+import tasks.TaskStatus;
 
 import java.time.Duration;
 import java.util.ArrayList;

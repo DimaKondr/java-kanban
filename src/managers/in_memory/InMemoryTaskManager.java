@@ -1,3 +1,10 @@
+package managers.in_memory;
+
+import managers.Managers;
+import managers.interfaces.HistoryManager;
+import managers.interfaces.TaskManager;
+import tasks.*;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -57,10 +64,14 @@ public class InMemoryTaskManager implements TaskManager {
     //Получение списка подзадач определенной Epic-задачи. Возвращаем список.
     @Override
     public List<SubTask> getSubTasksOfEpicTask(Integer epicTaskID) {
-        return epicTasksList.get(epicTaskID).getEpicSubTaskIDList()
-                .stream()
-                .map(subTaskID -> subTasksList.get(subTaskID))
-                .collect(Collectors.toList());
+        if (epicTaskID != null && epicTasksList.containsKey(epicTaskID)) {
+            return epicTasksList.get(epicTaskID).getEpicSubTaskIDList()
+                    .stream()
+                    .map(subTaskID -> subTasksList.get(subTaskID))
+                    .collect(Collectors.toList());
+        } else {
+            throw new NotFoundException("Не существует Epic-задачи с указанным ID: " + epicTaskID);
+        }
     }
 
     //Получение списка задач простого типа и подзадач всех Epic-задач, отсортированные по времени начала.
@@ -112,8 +123,8 @@ public class InMemoryTaskManager implements TaskManager {
     //Получение простой задачи по ее ID. Возвращаем имеющуюся простую задачу.
     @Override
     public Task getTaskByID(Integer taskID) {
-        if (!tasksList.containsKey(taskID)) {
-            return null;
+        if (taskID == null || !tasksList.containsKey(taskID)) {
+            throw new NotFoundException("Не существует задачи с указанным ID: " + taskID);
         } else {
             Task task = tasksList.get(taskID);
             historyManager.addToHistory(createTaskCopy(task));
@@ -124,8 +135,8 @@ public class InMemoryTaskManager implements TaskManager {
     //Получение Epic-задачи по ее ID. Возвращаем имеющуюся Epic-задачу.
     @Override
     public EpicTask getEpicTaskByID(Integer taskID) {
-        if (!epicTasksList.containsKey(taskID)) {
-            return null;
+        if (taskID == null || !epicTasksList.containsKey(taskID)) {
+            throw new NotFoundException("Не существует Epic-задачи с указанным ID: " + taskID);
         } else {
             EpicTask epicTask = epicTasksList.get(taskID);
             historyManager.addToHistory(createEpicTaskCopy(epicTask));
@@ -136,8 +147,8 @@ public class InMemoryTaskManager implements TaskManager {
     //Получение подзадачи по ее ID. Возвращаем имеющуюся подзадачу.
     @Override
     public SubTask getSubTaskByID(Integer taskID) {
-        if (!subTasksList.containsKey(taskID)) {
-            return null;
+        if (taskID == null || !subTasksList.containsKey(taskID)) {
+            throw new NotFoundException("Не существует подзадачи с указанным ID: " + taskID);
         } else {
             SubTask subTask = subTasksList.get(taskID);
             historyManager.addToHistory(createSubTaskCopy(subTask));
@@ -194,6 +205,9 @@ public class InMemoryTaskManager implements TaskManager {
     //Обновление информации об имеющейся простой задаче.
     @Override
     public void updateTask(Task updatedTask) {
+        if (updatedTask == null || !tasksList.containsKey(updatedTask.getTaskID())) {
+            throw new NotFoundException("Задачи с таким ID не существует.");
+        }
         if (updatedTask.getStartTime() == null) {
             tasksList.put(updatedTask.getTaskID(), createTaskCopy(updatedTask));
         }
@@ -212,6 +226,9 @@ public class InMemoryTaskManager implements TaskManager {
     //Обновление информации об имеющейся Epic-задаче.
     @Override
     public void updateEpicTask(EpicTask updatedEpicTask) {
+        if (updatedEpicTask == null || !epicTasksList.containsKey(updatedEpicTask.getTaskID())) {
+            throw new NotFoundException("Epic-задачи с таким ID не существует.");
+        }
         EpicTask oldEpicTask = epicTasksList.get(updatedEpicTask.getTaskID());
         List<Integer> oldEpicSubTaskIDList = oldEpicTask.getEpicSubTaskIDList();
         updatedEpicTask.setEpicSubTaskIDList(oldEpicSubTaskIDList);
@@ -223,6 +240,9 @@ public class InMemoryTaskManager implements TaskManager {
     //Обновление информации об имеющейся подзадаче.
     @Override
     public void updateSubTask(SubTask updatedSubTask) {
+        if (updatedSubTask == null || !subTasksList.containsKey(updatedSubTask.getTaskID())) {
+            throw new NotFoundException("Подзадачи с таким ID не существует.");
+        }
         int updatedSubTaskID = updatedSubTask.getTaskID();
         int epicTaskID = updatedSubTask.getEpicTaskID();
         if (updatedSubTaskID != epicTaskID && epicTasksList.containsKey(epicTaskID)
@@ -235,7 +255,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (updatedSubTaskID != epicTaskID && epicTasksList.containsKey(epicTaskID)
                 && updatedSubTask.getStartTime() != null) {
             if (!isOverlapWithCurrentTasks(updatedSubTask)) {
-                SubTask oldSubTask = createSubTaskCopy(subTasksList.get(updatedSubTask.getTaskID())); //subTasksList.get(updatedSubTask.getTaskID());
+                SubTask oldSubTask = createSubTaskCopy(subTasksList.get(updatedSubTask.getTaskID()));
                 subTasksList.put(updatedSubTask.getTaskID(), updatedSubTask);
                 EpicTask epicTask = epicTasksList.get(updatedSubTask.getEpicTaskID());
                 chooseEpicTaskStatus(epicTask);
@@ -252,7 +272,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeTaskByID(Integer taskID) {
         Task task = tasksList.get(taskID);
-        if (task != null && task.getStartTime() != null) {
+        if (task == null) {
+            throw new NotFoundException("Не существует задачи с указанным ID: " + taskID);
+        }
+        if (task.getStartTime() != null) {
             sortedTaskSet.remove(task);
         }
         tasksList.remove(taskID);
@@ -263,35 +286,36 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeEpicTaskByID(Integer taskID) {
         EpicTask epicTask = epicTasksList.get(taskID);
-        if (epicTask != null) {
-            for (Integer subTaskID : epicTask.getEpicSubTaskIDList()) {
-                if (subTasksList.get(subTaskID) != null && subTasksList.get(subTaskID).getStartTime() != null) {
-                    sortedTaskSet.remove(subTasksList.get(subTaskID));
-                }
-                subTasksList.remove(subTaskID);
-                historyManager.removeFromHistory(subTaskID);
-            }
-            epicTasksList.remove(taskID);
-            historyManager.removeFromHistory(taskID);
+        if (epicTask == null) {
+            throw new NotFoundException("Не существует Epic-задачи с указанным ID: " + taskID);
         }
+        for (Integer subTaskID : epicTask.getEpicSubTaskIDList()) {
+            if (subTasksList.get(subTaskID) != null && subTasksList.get(subTaskID).getStartTime() != null) {
+                sortedTaskSet.remove(subTasksList.get(subTaskID));
+            }
+            subTasksList.remove(subTaskID);
+            historyManager.removeFromHistory(subTaskID);
+        }
+        epicTasksList.remove(taskID);
+        historyManager.removeFromHistory(taskID);
     }
 
     //Удаление подзадачи по ее ID.
     @Override
     public void removeSubTaskByID(Integer taskID) {
         SubTask subTask = subTasksList.get(taskID);
-        if (subTask != null) {
-            EpicTask epicTask = epicTasksList.get(subTask.getEpicTaskID());
-            epicTask.removeEpicSubTaskByID(subTask.getTaskID());
-            subTasksList.remove(taskID);
-            historyManager.removeFromHistory(taskID);
-            chooseEpicTaskStatus(epicTask);
-            calculateEpicTaskDuration(epicTask);
+        if (subTask == null) {
+            throw new NotFoundException("Не существует подзадачи с указанным ID: " + taskID);
         }
-        if (subTask != null && subTask.getStartTime() != null) {
+        EpicTask epicTask = epicTasksList.get(subTask.getEpicTaskID());
+        epicTask.removeEpicSubTaskByID(subTask.getTaskID());
+        subTasksList.remove(taskID);
+        historyManager.removeFromHistory(taskID);
+        chooseEpicTaskStatus(epicTask);
+        calculateEpicTaskDuration(epicTask);
+        if (subTask.getStartTime() != null) {
             sortedTaskSet.remove(subTask);
         }
-
     }
 
     //Определение статуса Epic-задачи на основе статусов входящих в нее подзадач.
